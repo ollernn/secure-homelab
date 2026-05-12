@@ -24,7 +24,7 @@ Docker Services
 
 ## Network Mode
 
-The virtual machine will initially use NAT networking.
+The virtual machine currently uses NAT networking.
 
 NAT is a good starting point because it allows the Ubuntu Server VM to access the internet through the host computer without exposing the server directly to the rest of the network.
 
@@ -61,37 +61,47 @@ Bridged networking may be tested later if needed.
 
 ## IP Address
 
-The server IP address will be documented after the Ubuntu Server VM has been installed.
+The server IP address was checked after the Ubuntu Server installation.
 
-Planned command to check the IP address:
-
-```bash
-ip a
-```
-
-or:
+Commands used:
 
 ```bash
 hostname -I
 ```
 
+```bash
+ip a
+```
+
+The command `hostname -i` returned:
+
+```text
+127.0.1.1
+```
+
+This is a local hostname address and should not be used for SSH access.
+
+The correct IPv4 address was found under the `enp0s3` network interface:
+
+| Field | Value |
+|---|---|
+| Interface | enp0s3 |
+| IPv4 address | 10.0.2.15 |
+| Network mode | NAT |
+
 ## SSH Access
 
 The goal is to access the Ubuntu Server VM from the Windows host using SSH.
 
-Planned SSH format:
+Planned SSH command from Windows Terminal:
 
 ```bash
-ssh username@server-ip-address
+ssh olle@10.0.2.15
 ```
 
-Example:
+SSH was installed during the Ubuntu Server installation.
 
-```bash
-ssh olle@192.168.1.50
-```
-
-The exact IP address will be added after installation.
+SSH access will be tested in the next step.
 
 ## Planned Internal Services
 
@@ -147,6 +157,6 @@ Future versions of the homelab may include:
 
 For version 1, the homelab will use a simple and safe network setup.
 
-The Ubuntu Server VM will start with NAT networking, internal services and no public internet exposure.
+The Ubuntu Server VM currently uses NAT networking, internal services and no public internet exposure.
 
 More advanced networking will be added later when the basic server environment is working.

@@ -44,7 +44,7 @@ The virtual machine will be given enough resources to run Ubuntu Server, Docker 
 | RAM | 4-6 GB |
 | CPU | 2 cores |
 | Disk | 60-100 GB |
-| Operating System | Ubuntu Server LTS |
+| Operating System | Ubuntu Server 26.04 LTS |
 | Network Mode | NAT at first, Bridged later if needed |
 
 ## Why These Resources Are Enough

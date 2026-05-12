@@ -4,103 +4,145 @@
 
 This document describes the installation process for the Ubuntu Server virtual machine used in the Secure Homelab project.
 
-The goal of this step is to create a working Linux server environment that can later be secured, configured and used to run Docker services.
+The goal of this step was to create a working Linux server environment that can later be secured, configured and used to run Docker services.
 
 ## Installation Method
 
-The first version of the homelab will be installed as a virtual machine on my main Windows PC.
+The first version of the homelab was installed as a virtual machine on my main Windows PC.
 
-The virtual machine will run Ubuntu Server LTS.
+The virtual machine runs Ubuntu Server 26.04 LTS.
 
-## Software Needed
-
-The following software is needed for the installation:
+## Software Used
 
 | Software | Purpose |
 |---|---|
-| VirtualBox or VMware Workstation Player | Run the virtual machine |
-| Ubuntu Server LTS ISO | Server operating system |
+| Oracle VirtualBox 7.2.8 | Run the virtual machine |
+| Ubuntu Server 26.04 LTS ISO | Server operating system |
 | Windows Terminal / PowerShell | Manage the project and connect with SSH |
 | Git | Version control and documentation |
 
-## Planned Virtual Machine Settings
+## Virtual Machine Settings
 
 | Setting | Value |
 |---|---|
 | VM Name | secure-homelab |
-| Operating System | Ubuntu Server LTS |
-| RAM | 4-6 GB |
+| Operating System | Ubuntu Server 26.04 LTS |
+| RAM | 4096 MB |
 | CPU | 2 cores |
-| Disk | 60-100 GB |
-| Network Mode | NAT at first |
+| Disk | 80 GB |
+| Network Mode | NAT |
 | Hostname | secure-homelab |
+| Username | olle |
 
-## Step 1 - Download Ubuntu Server
+## Installation Choices
 
-Ubuntu Server LTS will be downloaded from the official Ubuntu website.
+During installation, the following choices were made:
 
-The LTS version is used because it is stable and receives long-term security updates.
-
-## Step 2 - Create the Virtual Machine
-
-The virtual machine will be created in VirtualBox or VMware.
-
-Planned settings:
-
-- Name: `secure-homelab`
-- Type: Linux
-- Version: Ubuntu 64-bit
-- RAM: 4-6 GB
-- CPU: 2 cores
-- Disk: 60-100 GB
-- Network: NAT
-
-## Step 3 - Install Ubuntu Server
-
-During installation, the following choices will be made:
-
-| Installation Setting | Planned Choice |
+| Installation Setting | Choice |
 |---|---|
 | Language | English |
-| Keyboard layout | Swedish or English |
+| Keyboard layout | Swedish |
 | Installation type | Ubuntu Server |
-| Network | DHCP |
+| Third-party drivers | Not installed |
+| Network | DHCP through NAT |
+| Proxy | None |
+| Ubuntu archive mirror | Default Ubuntu archive mirror |
 | Storage | Use entire virtual disk |
-| Profile username | olle |
-| Server name | secure-homelab |
-| OpenSSH Server | Install |
-| Featured server snaps | None for now |
+| LVM | Not used |
+| Disk encryption | Not used |
+| Ubuntu Pro | Skipped |
+| OpenSSH Server | Installed |
+| Password authentication over SSH | Enabled during installation |
+| Featured server snaps | None selected |
 
-## Step 4 - First Login
+## Storage Configuration
 
-After installation, I will log in directly through the VM console using the user created during installation.
+The server was installed on the VirtualBox virtual disk.
 
-Planned username:
+| Disk | Size | File system | Mount point |
+|---|---:|---|---|
+| VBOX_HARDDISK | 80 GB | ext4 | `/` |
 
-```text
-olle
+The virtual disk is stored on the host computer under the VirtualBox VM folder.
+
+## First Login
+
+After installation and reboot, I logged in successfully using the created user account.
+
+| Field | Value |
+|---|---|
+| Username | olle |
+| Hostname | secure-homelab |
+
+## System Information
+
+The following command was used to check the Ubuntu version:
+
+```bash
+lsb_release -a
 ```
 
-Planned hostname:
+Result:
+
+```text
+Distributor ID: Ubuntu
+Description:    Ubuntu 26.04 LTS
+Release:        26.04
+Codename:       resolute
+```
+
+The hostname was checked with:
+
+```bash
+hostname
+```
+
+Result:
 
 ```text
 secure-homelab
 ```
 
-## Step 5 - Update the System
+## Network Information
 
-After the first login, the system should be updated.
+The network interface was checked with:
 
-Planned commands:
+```bash
+ip a
+```
+
+Result:
+
+| Field | Value |
+|---|---|
+| Interface | enp0s3 |
+| IPv4 address | 10.0.2.15 |
+| Network mode | NAT |
+
+The command `hostname -i` returned:
+
+```text
+127.0.1.1
+```
+
+This is not the address used for SSH access. The correct IPv4 address for the VM is shown under the `enp0s3` interface:
+
+```text
+10.0.2.15
+```
+
+## System Update
+
+After the first login, the system was updated with:
 
 ```bash
 sudo apt update
 sudo apt upgrade -y
 ```
 
-## Step 6 - Install Basic Tools
+## Basic Tools Installed
 
-The following basic tools will be installed:
+The following basic tools were installed:
 
 ```bash
 sudo apt install git curl htop net-tools ufw -y
@@ -116,83 +158,29 @@ Purpose of the tools:
 | net-tools | Network tools |
 | ufw | Simple firewall management |
 
-## Step 7 - Check IP Address
-
-The server IP address will be checked with:
-
-```bash
-hostname -I
-```
-
-or:
-
-```bash
-ip a
-```
-
-The IP address will be documented here after installation:
-
-```text
-Server IP address: To be added after installation
-```
-
-## Step 8 - Test SSH Access
-
-After OpenSSH is installed and the IP address is known, SSH access from the Windows host will be tested.
-
-Planned command from Windows Terminal:
-
-```bash
-ssh olle@server-ip-address
-```
-
-Example format:
-
-```bash
-ssh olle@192.168.1.50
-```
-
-The exact command will be updated after installation.
-
-## Step 9 - Document the Installation
-
-After the installation is complete, this file will be updated with the actual configuration.
-
-The following information should be documented:
-
-- Virtualization software used
-- Ubuntu Server version
-- VM name
-- RAM allocation
-- CPU allocation
-- Disk size
-- Network mode
-- Hostname
-- Username
-- IP address
-- Any problems during installation
-- How the problems were solved
-
 ## Installation Notes
 
-This section will be updated during the actual installation.
-
-Notes:
-
-- To be added
-- To be added
-- To be added
+- Ubuntu Server 26.04 LTS was installed successfully.
+- The VM was created in VirtualBox with 4096 MB RAM, 2 CPU cores and an 80 GB virtual disk.
+- NAT networking was used for the first version.
+- OpenSSH Server was installed during the Ubuntu installation.
+- No featured server snaps were selected.
+- Ubuntu Pro was skipped.
+- The ISO file was removed from the virtual optical drive after installation.
+- The server booted successfully from the virtual hard disk after reboot.
 
 ## Problems and Solutions
 
-Any problems during installation will be documented here.
-
 | Problem | Cause | Solution |
 |---|---|---|
-| To be added | To be added | To be added |
+| VirtualBox showed Ubuntu 25.04 as the guest OS type | VirtualBox did not correctly identify Ubuntu 26.04 yet | Continued with Ubuntu 64-bit because the ISO file was Ubuntu Server 26.04 LTS |
+| Entered GRUB edit mode by mistake | Wrong key pressed during boot menu | Exited the edit screen and continued with the normal Ubuntu Server installation option |
+| `hostname -i` showed `127.0.1.1` | This command returned a local hostname address | Used `ip a` to find the real VM IPv4 address on `enp0s3` |
 
 ## Installation Status
 
-Status: Not installed yet
+Status: Installed
 
-The next step is to install Ubuntu Server in the virtual machine and update this document with the actual installation details.
+Ubuntu Server 26.04 LTS is installed and running in a VirtualBox virtual machine.
+
+The next step is to test SSH access from the Windows host and then apply the planned security configuration.

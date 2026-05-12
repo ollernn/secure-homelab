@@ -18,7 +18,7 @@ The purpose of the project is to develop practical skills in Linux administratio
 
 ## Planned Technologies
 
-- Ubuntu Server LTS
+- Ubuntu Server 26.04 LTS
 - SSH
 - UFW Firewall
 - fail2ban

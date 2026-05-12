@@ -53,6 +53,57 @@ The main learning goals for version 1 are:
 
 - Install Ubuntu Server in a virtual machine
 
+
+---
+
+### Session 2 - Ubuntu Server Installation
+
+**Date:** 2026-05-12
+
+**What I did:**
+
+- Installed Oracle VirtualBox on the Windows host machine
+- Downloaded Ubuntu Server 26.04 LTS
+- Created a virtual machine named `secure-homelab`
+- Allocated 4096 MB RAM, 2 CPU cores and an 80 GB virtual disk
+- Installed Ubuntu Server manually
+- Selected English as the installation language
+- Used a Swedish keyboard layout
+- Installed OpenSSH Server during installation
+- Skipped Ubuntu Pro
+- Did not install any featured server snaps
+- Booted successfully into the installed server
+- Logged in with the created user account
+- Checked the Ubuntu version, hostname and network interface
+- Updated the system
+- Installed basic tools: `git`, `curl`, `htop`, `net-tools` and `ufw`
+
+**What I learned:**
+
+- A virtual machine can be used as a safe server environment without affecting the main computer when it is turned off
+- NAT networking gives the VM internet access through the host computer
+- Ubuntu Server does not use a graphical desktop by default
+- The command `ip a` is useful for finding the real network interface and IP address
+- `hostname -i` can show a local hostname address and should not always be used as the SSH address
+- OpenSSH can be installed directly during the Ubuntu Server installation
+
+**Problems:**
+
+- VirtualBox showed the guest OS type as Ubuntu 25.04 even though the ISO file was Ubuntu Server 26.04 LTS
+- I accidentally entered the GRUB edit screen during boot
+- `hostname -i` showed `127.0.1.1`, which was not the correct address for SSH access
+
+**Solutions:**
+
+- Continued with the installation because the selected ISO file was correct
+- Exited the GRUB edit screen and started the normal Ubuntu Server installation
+- Used `ip a` to find the correct IPv4 address under the `enp0s3` interface
+
+**Next step:**
+
+- Test SSH access from Windows Terminal
+- Begin basic security configuration
+
 ---
 
 ## Problems and Solutions
@@ -84,7 +135,7 @@ Planned concepts:
 | Decision | Reason |
 |---|---|
 | Use a virtual machine for version 1 | Avoid buying hardware before the basic lab is working |
-| Use Ubuntu Server LTS | Stable, common and well documented |
+| Use Ubuntu Server 26.04 LTS | Stable, current, common and well documented |
 | Start with NAT networking | Simple and safer starting point |
 | Keep services internal only | Reduces risk while learning |
 | Use GitHub for detailed documentation | Makes the project easier to review technically |
@@ -102,14 +153,17 @@ As the project continues, this document will be updated with real problems, comm
 
 The next areas to learn are:
 
-- Installing Ubuntu Server
-- Connecting to the server with SSH
-- Basic Linux commands
-- Updating and managing packages
-- Securing the server before installing services
+- Connecting to the server with SSH from Windows Terminal
+- Creating and using SSH keys
+- Understanding basic Linux users and permissions
+- Configuring UFW firewall rules
+- Installing and configuring fail2ban
+- Securing the server before installing Docker services
 
 ## Current Status
 
-Status: Planning completed
+Status: Ubuntu Server installed
 
-The next step is to install Ubuntu Server in a virtual machine and begin the practical setup.
+Ubuntu Server 26.04 LTS is installed and running in a VirtualBox virtual machine.
+
+The next step is to test SSH access from Windows Terminal and begin the basic security configuration.
