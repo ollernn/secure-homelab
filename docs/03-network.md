@@ -91,17 +91,40 @@ The correct IPv4 address was found under the `enp0s3` network interface:
 
 ## SSH Access
 
-The goal is to access the Ubuntu Server VM from the Windows host using SSH.
+SSH access was tested from the Windows host using Windows Terminal / PowerShell.
 
-Planned SSH command from Windows Terminal:
+The first attempt was made directly to the VM NAT address:
 
 ```bash
 ssh olle@10.0.2.15
 ```
 
-SSH was installed during the Ubuntu Server installation.
+This resulted in a timeout because the VM was running behind VirtualBox NAT.
 
-SSH access will be tested in the next step.
+To solve this, a VirtualBox port forwarding rule was created.
+
+| Setting | Value |
+|---|---|
+| Name | SSH |
+| Protocol | TCP |
+| Host IP | 127.0.0.1 |
+| Host Port | 2222 |
+| Guest IP | empty |
+| Guest Port | 22 |
+
+After adding the port forwarding rule, SSH access worked with:
+
+```bash
+ssh -p 2222 olle@127.0.0.1
+```
+
+Result:
+
+```text
+SSH connection successful
+```
+
+This allows the Ubuntu Server VM to be managed from the Windows host without using the VirtualBox console.
 
 ## Planned Internal Services
 

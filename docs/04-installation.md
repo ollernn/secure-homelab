@@ -168,6 +168,10 @@ Purpose of the tools:
 - Ubuntu Pro was skipped.
 - The ISO file was removed from the virtual optical drive after installation.
 - The server booted successfully from the virtual hard disk after reboot.
+- SSH was tested from the Windows host after installation.
+- Direct SSH access to `10.0.2.15` timed out because the VM was running behind VirtualBox NAT.
+- A VirtualBox port forwarding rule was added from host port `2222` to guest port `22`.
+- SSH access then worked using `ssh -p 2222 olle@127.0.0.1`.
 
 ## Problems and Solutions
 
@@ -176,6 +180,7 @@ Purpose of the tools:
 | VirtualBox showed Ubuntu 25.04 as the guest OS type | VirtualBox did not correctly identify Ubuntu 26.04 yet | Continued with Ubuntu 64-bit because the ISO file was Ubuntu Server 26.04 LTS |
 | Entered GRUB edit mode by mistake | Wrong key pressed during boot menu | Exited the edit screen and continued with the normal Ubuntu Server installation option |
 | `hostname -i` showed `127.0.1.1` | This command returned a local hostname address | Used `ip a` to find the real VM IPv4 address on `enp0s3` |
+| SSH to `10.0.2.15` timed out | VirtualBox NAT does not expose the guest SSH port directly to the host | Added a port forwarding rule from `127.0.0.1:2222` to guest port `22` |
 
 ## Installation Status
 
@@ -183,4 +188,4 @@ Status: Installed
 
 Ubuntu Server 26.04 LTS is installed and running in a VirtualBox virtual machine.
 
-The next step is to test SSH access from the Windows host and then apply the planned security configuration.
+The next step is to apply the planned security configuration.

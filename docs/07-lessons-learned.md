@@ -104,6 +104,49 @@ The main learning goals for version 1 are:
 - Test SSH access from Windows Terminal
 - Begin basic security configuration
 
+
+---
+
+### Session 3 - SSH Access and Port Forwarding
+
+**Date:** 2026-05-12
+
+**What I did:**
+
+- Tested SSH access from Windows Terminal / PowerShell
+- First tried to connect directly to the VM NAT IP address with `ssh olle@10.0.2.15`
+- Found that the connection timed out
+- Checked that the SSH service was running on the Ubuntu server
+- Verified that SSH was active with `sudo systemctl status ssh`
+- Configured VirtualBox port forwarding for SSH
+- Connected successfully using `ssh -p 2222 olle@127.0.0.1`
+
+**What I learned:**
+
+- VirtualBox NAT allows the VM to access the internet, but does not automatically expose services back to the host
+- SSH can be active inside the VM even if the host cannot connect directly to the VM IP address
+- Port forwarding can map a port on the Windows host to a port inside the VM
+- `127.0.0.1:2222` on the host can be forwarded to port `22` inside the Ubuntu server
+- `systemctl status ssh` is useful for checking whether the SSH service is running
+
+**Problems:**
+
+- SSH to `10.0.2.15` timed out
+- SSH to `127.0.0.1:2222` was refused before the port forwarding rule was corrected
+- I accidentally typed `systemct1` instead of `systemctl`
+
+**Solutions:**
+
+- Confirmed that SSH was active on the Ubuntu server
+- Corrected the `systemctl` command
+- Added a VirtualBox port forwarding rule from host port `2222` to guest port `22`
+- Connected successfully with `ssh -p 2222 olle@127.0.0.1`
+
+**Next step:**
+
+- Configure SSH keys
+- Harden SSH settings
+- Enable and configure the UFW firewall
 ---
 
 ## Problems and Solutions
