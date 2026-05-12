@@ -69,3 +69,9 @@ At the end of version 1, I should have a working Linux server environment runnin
 The server should be secured with basic hardening measures, run several internal Docker services and be documented clearly in this GitHub repository.
 
 The project should also be summarized on my personal portfolio website.
+
+## Portfolio Purpose
+
+This project will also be used as part of my personal portfolio.
+
+The GitHub repository contains the detailed technical documentation, while my personal website will include a shorter summary of the project, the technologies used, screenshots and the main lessons learned.
