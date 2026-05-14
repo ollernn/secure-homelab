@@ -4,7 +4,7 @@
 
 This document describes the basic security measures applied in the Secure Homelab project.
 
-The goal is to create a safer Linux server environment before installing and exposing internal services.
+The goal is to document the basic security measures used to protect the Ubuntu Server VM and its internal Docker services.
 
 Version 1 focuses on basic server hardening, secure remote access and limited network exposure.
 
@@ -24,6 +24,8 @@ The main security goals for version 1 are:
 
 The first version of the homelab is not exposed to the public internet.
 
+The services are accessible from the Windows host through VirtualBox port forwarding, but they are not exposed directly to the public internet.
+
 The main risks for version 1 are:
 
 - Weak SSH configuration
@@ -35,6 +37,8 @@ The main risks for version 1 are:
 
 The goal is not to create enterprise-level security, but to build a secure foundation for learning and future improvements.
 
+Portainer has access to the Docker socket, which means it should only be accessible internally and protected with a strong admin password.
+
 ## Applied Security Measures
 
 | Security Measure | Purpose | Status |
@@ -45,7 +49,7 @@ The goal is not to create enterprise-level security, but to build a secure found
 | Disable root SSH login | Reduce risk of direct root access | Applied |
 | Disable password login for SSH | Reduce brute-force risk | Applied |
 | UFW firewall | Control open ports | Applied |
-| Allow only required ports | Reduce attack surface | Applied |
+| Allow only required service ports | Reduce attack surface | Applied |
 | fail2ban | Protect against repeated failed login attempts | Applied |
 | System updates | Keep system patched | Applied |
 | Document open ports | Keep track of exposed services | Applied |
@@ -183,7 +187,7 @@ The firewall was enabled with:
 sudo ufw enable
 ```
 
-The final firewall status was checked with:
+The firewall status after enabling SSH was checked with:
 
 ```bash
 sudo ufw status verbose
@@ -243,6 +247,18 @@ sudo ufw allow 8080/tcp
 
 The firewall now allows SSH, Portainer, Uptime Kuma, Homepage and Nginx.
 
+Final allowed ports for version 1:
+
+| Port | Service |
+|---:|---|
+| 22/tcp | OpenSSH |
+| 9443/tcp | Portainer |
+| 3001/tcp | Uptime Kuma |
+| 3000/tcp | Homepage |
+| 8080/tcp | Nginx |
+
+The final firewall status for version 1 includes SSH, Portainer, Uptime Kuma, Homepage and Nginx.
+
 ## Open Ports
 
 | Port | Service | Reason | Status |
@@ -287,17 +303,20 @@ fail2ban is enabled and running.
 | No public internet exposure in version 1 | Reduces risk while learning |
 | Internal-only services | Management tools should not be publicly accessible |
 | Use UFW instead of advanced firewall setup | Simple and suitable for version 1 |
-| Allow only OpenSSH at this stage | Reduces exposed services |
+| Allow only required service ports | Reduces exposed services while allowing internal tools to work |
 | Use fail2ban | Adds protection against repeated failed login attempts |
 | Use SSH keys | More secure than password-only login |
 | Disable SSH password login | Reduces brute-force risk |
 | Disable root SSH login | Prevents direct root access over SSH |
+| Keep Portainer internal only | Portainer has access to the Docker socket and should not be publicly exposed |
 
 ## Security Status
 
-Status: Basic security configured
+Status: Complete for version 1
 
-The server now uses SSH key authentication, root SSH login is disabled, password login over SSH is disabled, UFW is active and fail2ban is running.
+The server uses SSH key authentication, root SSH login is disabled, password login over SSH is disabled, UFW is active and fail2ban is running.
+
+Only the required ports for the version 1 internal services are allowed.
 
 ## Future Security Improvements
 
@@ -312,3 +331,5 @@ Future versions may include:
 - IDS/IPS
 - Backup strategy
 - Secrets management
+- Automated update strategy
+- Docker volume backups

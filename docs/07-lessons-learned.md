@@ -240,6 +240,26 @@ docker --version
 docker compose version
 docker run hello-world
 docker ps -a
+```
+
+**Result:**
+
+- Docker is installed and running
+- Docker Compose v2 is installed
+- Docker test result: `Hello from Docker!`
+- Docker commands can be used without `sudo` after reconnecting through SSH
+
+**Problems:**
+
+- No major problems occurred during the Docker installation.
+
+**Solutions:**
+
+- The SSH session was restarted after adding the user to the Docker group.
+
+**Next step:**
+
+- Deploy Portainer as the first internal Docker service
 
 ---
 
@@ -287,6 +307,26 @@ docker logs portainer
 
 sudo ufw allow 9443/tcp
 sudo ufw status verbose
+```
+
+**Result:**
+
+- Portainer is running
+- Portainer is accessible at `https://127.0.0.1:9443`
+- Portainer can manage the local Docker environment
+- UFW allows `9443/tcp`
+
+**Problems:**
+
+- No major problems occurred during the Portainer installation.
+
+**Solutions:**
+
+- Portainer was accessed through HTTPS using the forwarded host port `9443`.
+
+**Next step:**
+
+- Deploy Uptime Kuma for service monitoring
 
 ---
 
@@ -373,7 +413,7 @@ docker network inspect homelab
 - Created a folder structure for Homepage
 - Created a Docker Compose file for Homepage
 - Created basic Homepage configuration files
-- Added Portainer and Uptime Kuma as dashboard links
+- Added Portainer, Uptime Kuma and Nginx as dashboard links
 - Started Homepage with Docker Compose
 - Allowed port `3000/tcp` through UFW
 - Added a VirtualBox port forwarding rule for Homepage
@@ -406,6 +446,28 @@ docker ps
 
 sudo ufw allow 3000/tcp
 sudo ufw status verbose
+```
+
+**Result:**
+
+- Homepage is running
+- Homepage is accessible at `http://127.0.0.1:3000`
+- Homepage includes links to Portainer and Uptime Kuma
+- Homepage is monitored by Uptime Kuma
+- Homepage monitor status: `Up`
+- Homepage monitor result: `200 OK`
+
+**Problems:**
+
+- No major problems occurred during the Homepage installation.
+
+**Solutions:**
+
+- Homepage was connected to the existing Docker network and monitored internally with `http://homepage:3000`.
+
+**Next step:**
+
+- Deploy Nginx as a basic test web server
 
 ---
 
@@ -476,28 +538,7 @@ docker restart homepage
 - Add screenshots
 - Prepare a portfolio summary
 
-```
-
-**Result:**
-
-- Homepage is running
-- Homepage is accessible at `http://127.0.0.1:3000`
-- Homepage includes links to Portainer and Uptime Kuma
-- Homepage is monitored by Uptime Kuma
-- Homepage monitor status: `Up`
-- Homepage monitor result: `200 OK`
-
-**Problems:**
-
-- No major problems occurred during the Homepage installation.
-
-**Solutions:**
-
-- Homepage was connected to the existing Docker network and monitored internally with `http://homepage:3000`.
-
-**Next step:**
-
-- Deploy Nginx as a basic web server or reverse proxy
+---
 
 ## Problems and Solutions
 
@@ -507,13 +548,13 @@ docker restart homepage
 
 ## Technical Concepts Learned
 
-This section will be updated throughout the project.
+This section summarizes the technical concepts practiced during Secure Homelab v1.
 
-Planned concepts:
+Concepts learned:
 
 - Virtual machines
 - NAT networking
-- Bridged networking
+- NAT vs bridged networking
 - SSH
 - Linux users and permissions
 - UFW firewall
@@ -522,6 +563,15 @@ Planned concepts:
 - Docker Compose
 - Service monitoring
 - Technical documentation
+- SSH key authentication
+- VirtualBox port forwarding
+- Docker volumes
+- Docker networks
+- Container-to-container communication
+- Portainer
+- Uptime Kuma
+- Homepage
+- Nginx
 
 ## Decisions Made
 
@@ -529,34 +579,47 @@ Planned concepts:
 |---|---|
 | Use a virtual machine for version 1 | Avoid buying hardware before the basic lab is working |
 | Use Ubuntu Server 26.04 LTS | Stable, current, common and well documented |
-| Start with NAT networking | Simple and safer starting point |
+| Use NAT networking for version 1 | Simple, controlled and safer starting point |
 | Keep services internal only | Reduces risk while learning |
 | Use GitHub for detailed documentation | Makes the project easier to review technically |
 | Use the portfolio website for a summary | Makes the project easier to understand quickly |
+| Use VirtualBox port forwarding | Allows selected services to be accessed from the Windows host |
+| Use SSH key authentication | More secure than password-only SSH login |
+| Disable SSH password authentication | Reduces brute-force risk |
+| Use UFW firewall | Limits access to only required service ports |
+| Use fail2ban | Adds protection against repeated failed login attempts |
+| Use Docker for internal services | Makes services easier to run, isolate and document |
+| Use Uptime Kuma for monitoring | Provides visibility into service availability |
+| Use Homepage as a dashboard | Makes the homelab easier to navigate |
 
 ## Reflection
 
-This project starts with documentation and planning before the practical installation.
+This project started with documentation and planning before the practical installation.
 
-The purpose is not to make the project look finished before it is built, but to create a clear structure that can be updated as the lab develops.
+The purpose was not to make the project look finished before it was built, but to create a clear structure that could be updated as the lab developed.
 
-As the project continues, this document will be updated with real problems, commands, decisions and lessons learned.
+During version 1, this document was updated with real problems, commands, decisions and lessons learned.
 
 ## Next Learning Areas
 
-The next areas to learn are:
+Possible next learning areas for version 2 are:
 
-- Connecting to the server with SSH from Windows Terminal
-- Creating and using SSH keys
-- Understanding basic Linux users and permissions
-- Configuring UFW firewall rules
-- Installing and configuring fail2ban
-- Securing the server before installing Docker services
+- Nginx reverse proxy configuration
+- HTTPS with trusted certificates
+- Docker volume backups
+- Automated update strategy
+- Improved Homepage dashboard design
+- Centralized logging
+- VPN access
+- VLAN or network segmentation
+- Moving the homelab to a dedicated mini-PC server
 
 ## Current Status
 
-Status: Ubuntu Server installed
+Status: Version 1 complete
 
-Ubuntu Server 26.04 LTS is installed and running in a VirtualBox virtual machine.
+Secure Homelab v1 is installed, secured, documented and running internal Docker services.
 
-The next step is to test SSH access from Windows Terminal and begin the basic security configuration.
+The environment includes Ubuntu Server 26.04 LTS, SSH key authentication, UFW, fail2ban, Docker, Portainer, Uptime Kuma, Homepage and Nginx.
+
+The next step is to finalize the portfolio summary and plan possible version 2 improvements.

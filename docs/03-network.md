@@ -2,31 +2,31 @@
 
 ## Network Overview
 
-The first version of the homelab will run as a virtual machine on my main Windows PC.
+Secure Homelab v1 runs as a virtual machine on my main Windows PC.
 
-The virtual machine will use the host computer's network connection to access the internet and communicate with the host machine.
+The virtual machine uses the host computer's network connection to access the internet and to make selected services available from the Windows host.
 
 ## Basic Network Structure
 
-```text
+```
 Internet
    |
 Home Router
    |
 Windows Host PC
    |
-Virtual Machine
+Oracle VirtualBox
    |
-Ubuntu Server
+Ubuntu Server VM
    |
 Docker Services
 ```
 
 ## Network Mode
 
-The virtual machine currently uses NAT networking.
+The virtual machine uses NAT networking in VirtualBox.
 
-NAT is a good starting point because it allows the Ubuntu Server VM to access the internet through the host computer without exposing the server directly to the rest of the network.
+NAT is used because it allows the Ubuntu Server VM to access the internet through the host computer while keeping the VM isolated from the rest of the local network.
 
 ## NAT Networking
 
@@ -41,7 +41,7 @@ However, other devices on the home network may not be able to access the VM dire
 
 ## Bridged Networking
 
-Bridged networking may be used later if the server needs to behave more like a separate physical device on the home network.
+Bridged networking may be used in a later version if the server needs to behave more like a separate physical device on the home network.
 
 With bridged networking, the VM gets its own IP address from the home router.
 
@@ -51,15 +51,15 @@ This makes it easier to access services from other devices on the same network.
 
 For the first version, the project uses NAT networking.
 
-Bridged networking may be tested later if needed.
+Bridged networking is not required for version 1, but may be tested later if needed.
 
 | Network Mode | Used in Version 1? | Reason |
 |---|---|---|
-| NAT | Yes | Simple and safer starting point |
-| Bridged | Later if needed | Useful when accessing services from other devices |
+| NAT | Yes | Simple, controlled and safer starting point |
+| Bridged | No | May be tested later if access from other devices is needed |
 | Public internet exposure | No | Not needed for version 1 |
 
-## IP Address
+## VM Network Information
 
 The server IP address was checked after the Ubuntu Server installation.
 
@@ -88,6 +88,10 @@ The correct IPv4 address was found under the `enp0s3` network interface:
 | Interface | enp0s3 |
 | IPv4 address | 10.0.2.15 |
 | Network mode | NAT |
+
+Because the VM uses VirtualBox NAT, the address `10.0.2.15` is not used directly for SSH access from the Windows host.
+
+Instead, SSH is accessed through a VirtualBox port forwarding rule.
 
 ## SSH Access
 
@@ -239,36 +243,26 @@ The following containers were connected to the `homelab` network:
 - `homepage`
 - `nginx`
 
-This allows Uptime Kuma to monitor Portainer with:
+This allows Uptime Kuma to monitor the internal services using container names:
 
-```text
-https://portainer:9443
-```
+| Service | Internal URL |
+|---|---|
+| Portainer | `https://portainer:9443` |
+| Homepage | `http://homepage:3000` |
+| Nginx | `http://nginx:80` |
 
 Using `https://127.0.0.1:9443` inside Uptime Kuma did not work, because `127.0.0.1` inside a container refers to the container itself.
 
-This allows Uptime Kuma to monitor Homepage with:
+## Internal Services
 
-```text
-http://homepage:3000
-```
-
-This allows Uptime Kuma to monitor Nginx with:
-
-```text
-http://nginx:80
-```
-
-## Planned Internal Services
-
-The following services are planned for version 1:
+The following internal services are deployed in version 1:
 
 | Service | Purpose | Access |
 |---|---|---|
-| Portainer | Docker management | Internal only |
-| Uptime Kuma | Monitoring | Internal only |
-| Homepage | Homelab dashboard | Internal only |
-| Nginx | Web server / reverse proxy | Internal only |
+| Portainer | Docker management interface | Internal only through port forwarding |
+| Uptime Kuma | Service monitoring | Internal only through port forwarding |
+| Homepage | Homelab dashboard | Internal only through port forwarding |
+| Nginx | Test web server | Internal only through port forwarding |
 
 ## Ports
 
@@ -281,21 +275,22 @@ The following services are planned for version 1:
 | 8080 | Nginx | Test web server | Allowed in UFW |
 | 80 | HTTP / Nginx | Default HTTP port, not used directly yet | Not opened yet |
 | 443 | HTTPS / Nginx | May be used later | Not opened yet |
-| 9000 | Portainer HTTP | Exposed by container but not used directly | Not opened in UFW |
 
 ## Security Considerations
 
-The first version of the homelab will not be exposed directly to the public internet.
+The first version of the homelab is not exposed directly to the public internet.
 
 All services will be used internally for learning, testing and documentation.
 
-Security measures will include:
+Security measures include:
 
+- SSH key authentication
+- disabled SSH password login
 - UFW firewall
-- SSH hardening
 - fail2ban
 - limited open ports
 - internal-only access to management services
+- no public internet exposure
 
 ## Future Network Improvements
 
@@ -312,8 +307,8 @@ Future versions of the homelab may include:
 
 ## Version 1 Network Summary
 
-For version 1, the homelab will use a simple and safe network setup.
+Version 1 uses a simple and controlled network setup.
 
 The Ubuntu Server VM currently uses NAT networking, internal services and no public internet exposure.
 
-More advanced networking will be added later when the basic server environment is working.
+More advanced networking may be added in future versions, such as bridged networking, VLAN segmentation or VPN access.

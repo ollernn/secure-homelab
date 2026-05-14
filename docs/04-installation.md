@@ -4,7 +4,7 @@
 
 This document describes the installation process for the Ubuntu Server virtual machine used in the Secure Homelab project.
 
-The goal of this step was to create a working Linux server environment that can later be secured, configured and used to run Docker services.
+The goal of this step was to create the base Linux server environment used for the rest of Secure Homelab v1.
 
 ## Installation Method
 
@@ -12,7 +12,7 @@ The first version of the homelab was installed as a virtual machine on my main W
 
 The virtual machine runs Ubuntu Server 26.04 LTS.
 
-## Software Used
+## Software and Tools Used
 
 | Software | Purpose |
 |---|---|
@@ -32,7 +32,7 @@ The virtual machine runs Ubuntu Server 26.04 LTS.
 | Disk | 80 GB |
 | Network Mode | NAT |
 | Hostname | secure-homelab |
-| Username | olle |
+| Local user | olle |
 
 ## Installation Choices
 
@@ -52,7 +52,7 @@ During installation, the following choices were made:
 | Disk encryption | Not used |
 | Ubuntu Pro | Skipped |
 | OpenSSH Server | Installed |
-| Password authentication over SSH | Enabled during installation |
+| Password authentication over SSH | Enabled during installation, disabled later during SSH hardening |
 | Featured server snaps | None selected |
 
 ## Storage Configuration
@@ -71,7 +71,7 @@ After installation and reboot, I logged in successfully using the created user a
 
 | Field | Value |
 |---|---|
-| Username | olle |
+| Local user | olle |
 | Hostname | secure-homelab |
 
 ## System Information
@@ -172,6 +172,8 @@ Purpose of the tools:
 - Direct SSH access to `10.0.2.15` timed out because the VM was running behind VirtualBox NAT.
 - A VirtualBox port forwarding rule was added from host port `2222` to guest port `22`.
 - SSH access then worked using `ssh -p 2222 olle@127.0.0.1`.
+- SSH password authentication was later disabled during the security hardening phase.
+- SSH key authentication is now used for remote access.
 
 ## Problems and Solutions
 
@@ -184,8 +186,8 @@ Purpose of the tools:
 
 ## Installation Status
 
-Status: Installed
+Status: Complete
 
 Ubuntu Server 26.04 LTS is installed and running in a VirtualBox virtual machine.
 
-The next step is to apply the planned security configuration.
+The base installation was completed successfully and later secured, updated and extended with Docker services as part of Secure Homelab v1.

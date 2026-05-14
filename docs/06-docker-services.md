@@ -2,7 +2,7 @@
 
 ## Docker Services Overview
 
-This document describes the Docker-based services used and planned for the Secure Homelab project.
+This document describes the Docker-based services deployed in Secure Homelab v1.
 
 The goal is to use Docker and Docker Compose to run internal services for management, monitoring and navigation inside the homelab.
 
@@ -102,17 +102,19 @@ docker ps -a
 
 The `hello-world` test container was visible with status `Exited`.
 
-## Planned Docker Setup
+## Docker Setup
 
-The first version will use:
+Version 1 uses:
 
 - Docker
 - Docker Compose
-- Separate folders for each service
-- Internal-only access
+- Separate folders for service configuration
+- Internal-only access through VirtualBox port forwarding
 - Documentation for each service
+- Docker volumes for persistent data
+- A shared Docker network for internal service communication
 
-Planned folder structure:
+Service folder structure:
 
 ```text
 docker/
@@ -129,7 +131,7 @@ docker/
 | Portainer | Manage Docker containers through a web interface | Installed |
 | Uptime Kuma | Monitor service availability | Installed |
 | Homepage | Dashboard for homelab services | Installed |
-| Nginx | Web server / reverse proxy | Installed |
+| Nginx | Test web server | Installed |
 
 ## Portainer
 
@@ -387,10 +389,11 @@ The main service links were configured in:
 services.yaml
 ```
 
-Initial services added to the dashboard:
+Services added to the dashboard:
 
 - Portainer
 - Uptime Kuma
+- Nginx
 
 Basic dashboard settings were configured in:
 
@@ -523,32 +526,33 @@ Status: Installed and working
 
 ## Docker Compose
 
-Docker Compose will be used to define and run the services.
+Docker Compose is used to define and run services with YAML configuration files.
 
-Each service will have its own folder and compose file when needed.
+In version 1, Docker Compose was used for Homepage and Nginx.
 
 Example structure:
 
 ```text
-docker/
-└── uptime-kuma/
-    └── docker-compose.yml
+~/homelab/nginx/
+├── docker-compose.yml
+└── html/
+    └── index.html
 ```
 
-## Planned Installation Order
+## Installation Order
 
-The services will be installed in this order:
+The services were installed in this order:
 
 1. Portainer
 2. Uptime Kuma
 3. Homepage
 4. Nginx
 
-Docker and Docker Compose are already installed and verified.
+This order made it possible to first manage Docker with Portainer, then add monitoring with Uptime Kuma, then create a dashboard with Homepage and finally add a test web server with Nginx.
 
 ## Security Considerations
 
-The Docker services in version 1 will only be used internally.
+The Docker services in version 1 are used internally.
 
 Management interfaces such as Portainer should not be exposed to the public internet.
 
@@ -561,20 +565,18 @@ Important security considerations:
 - Avoid storing secrets directly in public files
 - Keep containers updated
 
-## Planned Ports
+## Service Ports
 
-| Port | Service | Access | Status |
-|---:|---|---|---|
-| 9000 | Portainer | Internal only | Not opened yet |
-| 3001 | Uptime Kuma | Internal only | Not opened yet |
-| 80 | Nginx | Internal only | Not opened yet |
-| 443 | Nginx | Future/internal only | Not opened yet |
-
-The final port list will be updated after implementation.
+| Host Port | Container Port | Service | Access | Status |
+|---:|---:|---|---|---|
+| 9443 | 9443 | Portainer | Internal only through port forwarding | Opened in UFW |
+| 3001 | 3001 | Uptime Kuma | Internal only through port forwarding | Opened in UFW |
+| 3000 | 3000 | Homepage | Internal only through port forwarding | Opened in UFW |
+| 8080 | 80 | Nginx | Internal only through port forwarding | Opened in UFW |
 
 ## Documentation Plan
 
-For each Docker service, the following should be documented:
+For each Docker service, the following is documented:
 
 - What the service does
 - Why it is included
@@ -586,8 +588,30 @@ For each Docker service, the following should be documented:
 
 ## Docker Services Status
 
-Status: Docker installed and verified
+Status: Complete for version 1
 
 Docker and Docker Compose are installed and working.
 
-The next step is to deploy the first internal service, Portainer.
+The following internal Docker services are deployed and verified:
+
+- Portainer
+- Uptime Kuma
+- Homepage
+- Nginx
+
+Portainer, Homepage and Nginx are monitored in Uptime Kuma.
+
+Homepage provides dashboard links to Portainer, Uptime Kuma and Nginx.
+
+## Docker Network Summary
+
+A custom Docker network named `homelab` is used for internal container communication.
+
+Connected containers:
+
+- `portainer`
+- `uptime-kuma`
+- `homepage`
+- `nginx`
+
+This allows Uptime Kuma to monitor services internally using container names instead of host addresses.
