@@ -229,15 +229,19 @@ Uptime Kuma was later allowed through UFW with:
 sudo ufw allow 3001/tcp
 ```
 
-The firewall now allows SSH, Portainer and Uptime Kuma.
-
 Homepage was later allowed through UFW with:
 
 ```bash
 sudo ufw allow 3000/tcp
 ```
 
-The firewall now allows SSH, Portainer, Uptime Kuma and Homepage.
+Nginx was later allowed through UFW with:
+
+```bash
+sudo ufw allow 8080/tcp
+```
+
+The firewall now allows SSH, Portainer, Uptime Kuma, Homepage and Nginx.
 
 ## Open Ports
 
@@ -247,7 +251,8 @@ The firewall now allows SSH, Portainer, Uptime Kuma and Homepage.
 | 9443 | Portainer | Docker management web interface | Allowed |
 | 3001 | Uptime Kuma | Monitoring dashboard | Allowed |
 | 3000 | Homepage | Internal homelab dashboard | Allowed |
-| 80 | HTTP / Nginx | Web access later | Not opened yet |
+| 8080 | Nginx | Test web server | Allowed |
+| 80 | HTTP / Nginx | Default web access later | Not opened yet |
 | 443 | HTTPS / Nginx | Secure web access later | Not opened yet |
 
 ## fail2ban

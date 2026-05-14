@@ -364,8 +364,6 @@ docker network inspect homelab
 
 ---
 
----
-
 ### Session 8 - Homepage Dashboard Installation
 
 **Date:** 2026-05-14
@@ -408,6 +406,76 @@ docker ps
 
 sudo ufw allow 3000/tcp
 sudo ufw status verbose
+
+---
+
+### Session 9 - Nginx Web Server Installation
+
+**Date:** 2026-05-14
+
+**What I did:**
+
+- Created a folder structure for Nginx
+- Created a simple HTML test page
+- Created a Docker Compose file for Nginx
+- Started Nginx with Docker Compose
+- Exposed Nginx on port `8080`
+- Allowed port `8080/tcp` through UFW
+- Added a VirtualBox port forwarding rule for Nginx
+- Accessed the Nginx test page from the Windows host
+- Added Nginx as a monitor in Uptime Kuma
+- Added Nginx as a link in the Homepage dashboard
+
+**What I learned:**
+
+- Nginx can be used as a lightweight web server
+- Docker can serve static HTML files by mounting a local folder into the container
+- Host port `8080` can map to container port `80`
+- Uptime Kuma can monitor Nginx internally using the Docker container name
+- Homepage can be used as a central dashboard for internal homelab services
+- This setup can later be expanded into a reverse proxy setup
+
+**Commands used:**
+
+```bash
+mkdir -p ~/homelab/nginx/html
+cd ~/homelab/nginx
+nano html/index.html
+nano docker-compose.yml
+
+docker compose up -d
+docker ps
+
+sudo ufw allow 8080/tcp
+sudo ufw status verbose
+
+docker restart homepage
+```
+
+**Result:**
+
+- Nginx is running
+- Nginx is accessible at `http://127.0.0.1:8080`
+- Nginx serves a custom Secure Homelab test page
+- Nginx is monitored by Uptime Kuma
+- Nginx monitor status: `Up`
+- Nginx monitor result: `200 OK`
+- Nginx is linked from the Homepage dashboard
+
+**Problems:**
+
+- No major problems occurred during the Nginx installation.
+
+**Solutions:**
+
+- Nginx was connected to the existing Docker network and monitored internally with `http://nginx:80`.
+
+**Next step:**
+
+- Finalize version 1 documentation
+- Add screenshots
+- Prepare a portfolio summary
+
 ```
 
 **Result:**

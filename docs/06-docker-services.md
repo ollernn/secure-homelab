@@ -129,7 +129,7 @@ docker/
 | Portainer | Manage Docker containers through a web interface | Installed |
 | Uptime Kuma | Monitor service availability | Installed |
 | Homepage | Dashboard for homelab services | Installed |
-| Nginx | Web server / reverse proxy | Planned |
+| Nginx | Web server / reverse proxy | Installed |
 
 ## Portainer
 
@@ -429,26 +429,97 @@ Status: Installed and working
 
 ## Nginx
 
-Nginx will be used as a web server and may later be used as a reverse proxy.
+Nginx is used as a basic web server in the homelab.
 
-Planned use:
+It was installed as the fourth internal Docker service.
 
-- Serve a simple test page
-- Learn basic web server configuration
-- Prepare for future reverse proxy setup
+### Purpose
 
-Expected ports:
+Nginx is included to:
+
+- Serve a simple test web page
+- Learn basic web server deployment with Docker
+- Prepare for future reverse proxy configuration
+- Provide a service that can be monitored by Uptime Kuma
+- Provide a linkable service in the Homepage dashboard
+
+### Folder Structure
+
+Nginx was configured using files stored on the Ubuntu server:
 
 ```text
-80
-443
+~/homelab/nginx/
+├── docker-compose.yml
+└── html/
+    └── index.html
 ```
 
-Status:
+### Test Web Page
+
+A simple HTML page was created at:
 
 ```text
-Not installed yet
+~/homelab/nginx/html/index.html
 ```
+
+The page contains a basic Secure Homelab test message.
+
+### Docker Compose
+
+Nginx was deployed using Docker Compose.
+
+The compose file was created at:
+
+```text
+~/homelab/nginx/docker-compose.yml
+```
+
+Docker Compose was used to start the service:
+
+```bash
+docker compose up -d
+```
+
+### Access
+
+Nginx is exposed on host port `8080`, which maps to container port `80`.
+
+Access URL from the Windows host:
+
+```text
+http://127.0.0.1:8080
+```
+
+### Monitoring
+
+Nginx was added as a monitor in Uptime Kuma.
+
+Uptime Kuma monitors Nginx internally through the Docker network:
+
+```text
+http://nginx:80
+```
+
+Final result:
+
+```text
+Nginx: Up
+Status code: 200 OK
+```
+
+### Homepage Dashboard
+
+Nginx was added to the Homepage dashboard as a link.
+
+Dashboard URL:
+
+```text
+http://127.0.0.1:3000
+```
+
+### Status
+
+Status: Installed and working
 
 ## Docker Compose
 
