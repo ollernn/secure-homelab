@@ -2,7 +2,7 @@
 
 ## Security Overview
 
-This document describes the basic security measures planned and applied in the Secure Homelab project.
+This document describes the basic security measures applied in the Secure Homelab project.
 
 The goal is to create a safer Linux server environment before installing and exposing internal services.
 
@@ -35,40 +35,51 @@ The main risks for version 1 are:
 
 The goal is not to create enterprise-level security, but to build a secure foundation for learning and future improvements.
 
-## Planned Security Measures
+## Applied Security Measures
 
 | Security Measure | Purpose | Status |
 |---|---|---|
-| Create a non-root user | Avoid using root for daily administration | Planned |
-| Use SSH access | Manage the server remotely | Planned |
-| Use SSH keys | Safer login method than password-only access | Planned |
-| Disable root SSH login | Reduce risk of direct root access | Planned |
-| Disable password login for SSH | Reduce brute-force risk | Planned |
-| Enable UFW firewall | Control open ports | Planned |
-| Allow only required ports | Reduce attack surface | Planned |
-| Install fail2ban | Block repeated failed login attempts | Planned |
-| Enable automatic security updates | Keep system patched | Planned |
-| Document open ports | Keep track of exposed services | Planned |
+| Non-root user | Avoid using root for daily administration | Applied |
+| SSH access | Manage the server remotely | Applied |
+| SSH key authentication | Safer login method than password-only access | Applied |
+| Disable root SSH login | Reduce risk of direct root access | Applied |
+| Disable password login for SSH | Reduce brute-force risk | Applied |
+| UFW firewall | Control open ports | Applied |
+| Allow only required ports | Reduce attack surface | Applied |
+| fail2ban | Protect against repeated failed login attempts | Applied |
+| System updates | Keep system patched | Applied |
+| Document open ports | Keep track of exposed services | Applied |
 
 ## SSH Security
 
-SSH will be used to manage the server from the Windows host machine.
+SSH is used to manage the server from the Windows host machine.
 
-Planned SSH hardening:
+The SSH key pair was created on the Windows host using:
 
-- Use SSH keys
-- Disable root login
-- Disable password authentication after SSH keys are working
-- Only allow SSH from the internal environment
-- Keep SSH access internal only
-
-Planned SSH configuration file:
-
-```text
-/etc/ssh/sshd_config
+```powershell
+ssh-keygen
 ```
 
-Planned settings to review:
+The public key was copied to the Ubuntu server with:
+
+```powershell
+type $env:USERPROFILE\.ssh\id_ed25519.pub | ssh -p 2222 olle@127.0.0.1 "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+```
+
+The SSH directory permissions were configured with:
+
+```bash
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+```
+
+A custom SSH hardening configuration was created:
+
+```bash
+sudo nano /etc/ssh/sshd_config.d/99-secure-homelab.conf
+```
+
+Configuration:
 
 ```text
 PermitRootLogin no
@@ -76,83 +87,157 @@ PasswordAuthentication no
 PubkeyAuthentication yes
 ```
 
-The exact configuration will be updated after implementation.
+## cloud-init SSH Configuration Issue
+
+After applying the custom SSH configuration, `PasswordAuthentication` was still enabled.
+
+This was checked with:
+
+```bash
+sudo sshd -T | grep -E "permitrootlogin|passwordauthentication|pubkeyauthentication"
+```
+
+Initial result:
+
+```text
+permitrootlogin no
+pubkeyauthentication yes
+passwordauthentication yes
+```
+
+The cause was another configuration file created by cloud-init:
+
+```text
+/etc/ssh/sshd_config.d/50-cloud-init.conf
+```
+
+It contained:
+
+```text
+PasswordAuthentication yes
+```
+
+This was changed to:
+
+```text
+PasswordAuthentication no
+```
+
+After restarting SSH, the final verified configuration was:
+
+```text
+permitrootlogin no
+passwordauthentication no
+pubkeyauthentication yes
+```
+
+## SSH Service Validation
+
+The SSH configuration was tested before restarting the service:
+
+```bash
+sudo sshd -t
+```
+
+No errors were returned.
+
+SSH was restarted with:
+
+```bash
+sudo systemctl restart ssh
+```
+
+A new SSH session was opened from Windows to confirm that access still worked:
+
+```powershell
+ssh -p 2222 olle@127.0.0.1
+```
+
+The login worked without a password, using SSH key authentication.
 
 ## Firewall Configuration
 
-UFW will be used as the basic firewall.
+UFW is used as the basic firewall.
 
-Planned default rules:
+Initial status:
 
 ```bash
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
+sudo ufw status
 ```
 
-Planned allowed services:
+Result:
+
+```text
+Status: inactive
+```
+
+OpenSSH was allowed before enabling the firewall:
 
 ```bash
 sudo ufw allow OpenSSH
 ```
 
-Other ports will only be opened when needed.
+The firewall was enabled with:
 
-## Planned Open Ports
+```bash
+sudo ufw enable
+```
+
+The final firewall status was checked with:
+
+```bash
+sudo ufw status verbose
+```
+
+Result:
+
+```text
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+
+To                         Action      From
+--                         ------      ----
+22/tcp (OpenSSH)           ALLOW IN    Anywhere
+22/tcp (OpenSSH (v6))      ALLOW IN    Anywhere (v6)
+```
+
+## Open Ports
 
 | Port | Service | Reason | Status |
 |---:|---|---|---|
-| 22 | SSH | Server administration | Planned |
-| 80 | HTTP / Nginx | Web access later | Planned |
-| 443 | HTTPS / Nginx | Secure web access later | Future |
-| 9000 | Portainer | Docker management | Planned/internal only |
-| 3001 | Uptime Kuma | Monitoring dashboard | Planned/internal only |
+| 22 | SSH | Server administration | Allowed |
+| 80 | HTTP / Nginx | Web access later | Not opened yet |
+| 443 | HTTPS / Nginx | Secure web access later | Not opened yet |
+| 9000 | Portainer | Docker management | Not opened yet |
+| 3001 | Uptime Kuma | Monitoring dashboard | Not opened yet |
 
-The final list of open ports will be updated after the services are installed.
+At this stage, only SSH is allowed through the firewall.
 
 ## fail2ban
 
-fail2ban will be installed to protect against repeated failed login attempts.
+fail2ban was installed to protect against repeated failed login attempts.
 
-Planned installation:
+Installation command:
 
 ```bash
 sudo apt install fail2ban -y
 ```
 
-Planned service check:
+The service status was checked with:
 
 ```bash
 sudo systemctl status fail2ban
 ```
 
-The exact configuration will be documented after implementation.
+Result:
 
-## Automatic Security Updates
-
-Automatic security updates will be enabled to keep the server patched.
-
-Planned package:
-
-```bash
-sudo apt install unattended-upgrades -y
+```text
+fail2ban.service - Fail2Ban Service
+Active: active (running)
 ```
 
-Planned configuration command:
-
-```bash
-sudo dpkg-reconfigure unattended-upgrades
-```
-
-## Update Routine
-
-The server should be updated regularly.
-
-Manual update commands:
-
-```bash
-sudo apt update
-sudo apt upgrade -y
-```
+fail2ban is enabled and running.
 
 ## Security Decisions
 
@@ -161,16 +246,17 @@ sudo apt upgrade -y
 | No public internet exposure in version 1 | Reduces risk while learning |
 | Internal-only services | Management tools should not be publicly accessible |
 | Use UFW instead of advanced firewall setup | Simple and suitable for version 1 |
+| Allow only OpenSSH at this stage | Reduces exposed services |
 | Use fail2ban | Adds protection against repeated failed login attempts |
 | Use SSH keys | More secure than password-only login |
+| Disable SSH password login | Reduces brute-force risk |
+| Disable root SSH login | Prevents direct root access over SSH |
 
 ## Security Status
 
-Status: Planned
+Status: Basic security configured
 
-The security configuration has not been applied yet.
-
-This document will be updated after SSH, UFW, fail2ban and automatic updates have been configured.
+The server now uses SSH key authentication, root SSH login is disabled, password login over SSH is disabled, UFW is active and fail2ban is running.
 
 ## Future Security Improvements
 

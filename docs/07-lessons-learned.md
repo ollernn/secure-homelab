@@ -147,6 +147,57 @@ The main learning goals for version 1 are:
 - Configure SSH keys
 - Harden SSH settings
 - Enable and configure the UFW firewall
+
+---
+
+### Session 4 - Basic Server Security
+
+**Date:** 2026-05-14
+
+**What I did:**
+
+- Created an SSH key pair on the Windows host
+- Copied the public SSH key to the Ubuntu server
+- Tested SSH key-based login
+- Configured SSH directory permissions
+- Disabled root login over SSH
+- Disabled password authentication over SSH
+- Verified the final SSH configuration
+- Enabled the UFW firewall
+- Allowed OpenSSH through UFW
+- Installed fail2ban
+- Verified that fail2ban is active and running
+
+**What I learned:**
+
+- SSH key authentication is safer than password-only login
+- The private key stays on the client machine and the public key is stored on the server
+- SSH configuration can be split across several files in `/etc/ssh/sshd_config.d/`
+- `sshd -T` shows the final effective SSH configuration
+- `sshd -t` checks if the SSH configuration is valid before restarting the service
+- UFW can be used to deny incoming traffic by default and only allow required services
+- fail2ban helps protect against repeated failed login attempts
+
+**Problems:**
+
+- `PasswordAuthentication no` did not apply at first
+- `sshd -T` still showed `passwordauthentication yes`
+- The setting was being overridden by `/etc/ssh/sshd_config.d/50-cloud-init.conf`
+
+**Solutions:**
+
+- Used `grep` to find where `PasswordAuthentication` was configured
+- Found that cloud-init had created a file with `PasswordAuthentication yes`
+- Changed that setting to `PasswordAuthentication no`
+- Restarted SSH and verified the final configuration
+- Opened a new SSH session before closing the old one to avoid locking myself out
+
+**Next step:**
+
+- Install Docker
+- Install Docker Compose
+- Start deploying the first internal services
+
 ---
 
 ## Problems and Solutions

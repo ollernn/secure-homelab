@@ -47,9 +47,9 @@ With bridged networking, the VM gets its own IP address from the home router.
 
 This makes it easier to access services from other devices on the same network.
 
-## Planned Network Decision for Version 1
+## Network Decision for Version 1
 
-For the first version, the project will start with NAT networking.
+For the first version, the project uses NAT networking.
 
 Bridged networking may be tested later if needed.
 
@@ -126,6 +126,16 @@ SSH connection successful
 
 This allows the Ubuntu Server VM to be managed from the Windows host without using the VirtualBox console.
 
+After SSH key authentication was configured, password login over SSH was disabled.
+
+The current SSH access method is:
+
+```bash
+ssh -p 2222 olle@127.0.0.1
+```
+
+Authentication is done with the SSH key stored on the Windows host.
+
 ## Planned Internal Services
 
 The following services are planned for version 1:
@@ -137,17 +147,15 @@ The following services are planned for version 1:
 | Homepage | Homelab dashboard | Internal only |
 | Nginx | Web server / reverse proxy | Internal only |
 
-## Planned Ports
+## Ports
 
-The exact ports may change during implementation, but the expected ports are:
-
-| Port | Service | Notes |
-|---:|---|---|
-| 22 | SSH | Used for server administration |
-| 80 | HTTP / Nginx | Used for web access |
-| 443 | HTTPS / Nginx | May be used later |
-| 9000 | Portainer | Docker management interface |
-| 3001 | Uptime Kuma | Monitoring dashboard |
+| Port | Service | Notes | Status |
+|---:|---|---|---|
+| 22 | SSH | Used for server administration | Allowed in UFW |
+| 80 | HTTP / Nginx | Used for web access later | Not opened yet |
+| 443 | HTTPS / Nginx | May be used later | Not opened yet |
+| 9000 | Portainer | Docker management interface | Not opened yet |
+| 3001 | Uptime Kuma | Monitoring dashboard | Not opened yet |
 
 ## Security Considerations
 
