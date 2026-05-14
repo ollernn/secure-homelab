@@ -2,7 +2,7 @@
 
 ## Docker Services Overview
 
-This document describes the Docker-based services planned for the Secure Homelab project.
+This document describes the Docker-based services used and planned for the Secure Homelab project.
 
 The goal is to use Docker and Docker Compose to run internal services for management, monitoring and navigation inside the homelab.
 
@@ -13,6 +13,94 @@ Version 1 focuses on a small number of useful services instead of a large and co
 Docker is used because it makes it easier to run and manage services in isolated containers.
 
 Using Docker also makes the environment easier to document, rebuild and expand later.
+
+## Docker Installation
+
+Docker and Docker Compose were installed on the Ubuntu Server VM using apt.
+
+Installation command:
+
+```bash
+sudo apt update
+sudo apt install docker.io docker-compose-v2 -y
+```
+
+Docker was enabled and started with:
+
+```bash
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo systemctl status docker
+```
+
+The Docker service was verified as active:
+
+```text
+Active: active (running)
+```
+
+## Docker User Group
+
+The user `olle` was added to the Docker group to allow Docker commands without using `sudo`.
+
+Command used:
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+After this, the SSH session was closed and reopened so that the new group membership would apply.
+
+## Installed Versions
+
+Docker version was checked with:
+
+```bash
+docker --version
+```
+
+Result:
+
+```text
+Docker version 29.1.3
+```
+
+Docker Compose version was checked with:
+
+```bash
+docker compose version
+```
+
+Result:
+
+```text
+Docker Compose version 2.40.3
+```
+
+## Docker Test
+
+Docker was tested with the official `hello-world` container.
+
+Command used:
+
+```bash
+docker run hello-world
+```
+
+Result:
+
+```text
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+```
+
+The container list was checked with:
+
+```bash
+docker ps -a
+```
+
+The `hello-world` test container was visible with status `Exited`.
 
 ## Planned Docker Setup
 
@@ -146,12 +234,12 @@ docker/
 
 The services will be installed in this order:
 
-1. Docker
-2. Docker Compose
-3. Portainer
-4. Uptime Kuma
-5. Homepage
-6. Nginx
+1. Portainer
+2. Uptime Kuma
+3. Homepage
+4. Nginx
+
+Docker and Docker Compose are already installed and verified.
 
 ## Security Considerations
 
@@ -170,12 +258,12 @@ Important security considerations:
 
 ## Planned Ports
 
-| Port | Service | Access |
-|---:|---|---|
-| 9000 | Portainer | Internal only |
-| 3001 | Uptime Kuma | Internal only |
-| 80 | Nginx | Internal only |
-| 443 | Nginx | Future/internal only |
+| Port | Service | Access | Status |
+|---:|---|---|---|
+| 9000 | Portainer | Internal only | Not opened yet |
+| 3001 | Uptime Kuma | Internal only | Not opened yet |
+| 80 | Nginx | Internal only | Not opened yet |
+| 443 | Nginx | Future/internal only | Not opened yet |
 
 The final port list will be updated after implementation.
 
@@ -193,8 +281,8 @@ For each Docker service, the following should be documented:
 
 ## Docker Services Status
 
-Status: Planned
+Status: Docker installed and verified
 
-Docker and the planned services have not been installed yet.
+Docker and Docker Compose are installed and working.
 
-This document will be updated after Docker, Docker Compose and the first services have been configured.
+The next step is to deploy the first internal service, Portainer.

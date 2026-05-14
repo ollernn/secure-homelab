@@ -200,6 +200,49 @@ The main learning goals for version 1 are:
 
 ---
 
+### Session 5 - Docker and Docker Compose Installation
+
+**Date:** 2026-05-14
+
+**What I did:**
+
+- Installed Docker on the Ubuntu Server VM
+- Installed Docker Compose v2
+- Enabled and started the Docker service
+- Verified that Docker was active and running
+- Added the user `olle` to the Docker group
+- Logged out and back in through SSH so the Docker group change would apply
+- Checked the installed Docker version
+- Checked the installed Docker Compose version
+- Ran the official `hello-world` container
+- Verified the test container with `docker ps -a`
+
+**What I learned:**
+
+- Docker runs as a system service on the server
+- Docker can be enabled to start automatically at boot
+- The user must be part of the Docker group to run Docker commands without `sudo`
+- Group membership changes require logging out and back in
+- `docker run hello-world` is a simple way to verify that Docker works
+- `docker ps -a` shows both running and stopped containers
+- Docker Compose v2 is used with the command `docker compose`
+
+**Commands used:**
+
+```bash
+sudo apt update
+sudo apt install docker.io docker-compose-v2 -y
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo systemctl status docker
+sudo usermod -aG docker $USER
+docker --version
+docker compose version
+docker run hello-world
+docker ps -a
+
+---
+
 ## Problems and Solutions
 
 | Problem | Cause | Solution |
