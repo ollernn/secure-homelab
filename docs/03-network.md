@@ -136,6 +136,29 @@ ssh -p 2222 olle@127.0.0.1
 
 Authentication is done with the SSH key stored on the Windows host.
 
+## Portainer Access
+
+Portainer is accessed through HTTPS on port `9443`.
+
+Because the VM uses VirtualBox NAT, a port forwarding rule is used from the Windows host to the Ubuntu VM.
+
+| Setting | Value |
+|---|---|
+| Name | Portainer |
+| Protocol | TCP |
+| Host IP | 127.0.0.1 |
+| Host Port | 9443 |
+| Guest IP | empty |
+| Guest Port | 9443 |
+
+Access URL from the Windows host:
+
+```text
+https://127.0.0.1:9443
+```
+
+Portainer uses a self-signed certificate in this internal lab environment.
+
 ## Planned Internal Services
 
 The following services are planned for version 1:
@@ -152,9 +175,10 @@ The following services are planned for version 1:
 | Port | Service | Notes | Status |
 |---:|---|---|---|
 | 22 | SSH | Used for server administration | Allowed in UFW |
+| 9443 | Portainer | Docker management web interface | Allowed in UFW |
 | 80 | HTTP / Nginx | Used for web access later | Not opened yet |
 | 443 | HTTPS / Nginx | May be used later | Not opened yet |
-| 9000 | Portainer | Docker management interface | Not opened yet |
+| 9000 | Portainer HTTP | Exposed by container but not used directly | Not opened in UFW |
 | 3001 | Uptime Kuma | Monitoring dashboard | Not opened yet |
 
 ## Security Considerations

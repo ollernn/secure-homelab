@@ -202,17 +202,36 @@ To                         Action      From
 22/tcp (OpenSSH (v6))      ALLOW IN    Anywhere (v6)
 ```
 
+Portainer was later allowed through UFW with:
+
+```bash
+sudo ufw allow 9443/tcp
+```
+
+The firewall status was checked with:
+
+```bash
+sudo ufw status verbose
+```
+
+Result:
+
+```text
+22/tcp (OpenSSH)           ALLOW IN    Anywhere
+9443/tcp                   ALLOW IN    Anywhere
+22/tcp (OpenSSH (v6))      ALLOW IN    Anywhere (v6)
+9443/tcp (v6)              ALLOW IN    Anywhere (v6)
+```
+
 ## Open Ports
 
 | Port | Service | Reason | Status |
 |---:|---|---|---|
 | 22 | SSH | Server administration | Allowed |
+| 9443 | Portainer | Docker management web interface | Allowed |
 | 80 | HTTP / Nginx | Web access later | Not opened yet |
 | 443 | HTTPS / Nginx | Secure web access later | Not opened yet |
-| 9000 | Portainer | Docker management | Not opened yet |
 | 3001 | Uptime Kuma | Monitoring dashboard | Not opened yet |
-
-At this stage, only SSH is allowed through the firewall.
 
 ## fail2ban
 

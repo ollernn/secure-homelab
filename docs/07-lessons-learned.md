@@ -243,6 +243,52 @@ docker ps -a
 
 ---
 
+### Session 6 - Portainer Installation
+
+**Date:** 2026-05-14
+
+**What I did:**
+
+- Created a Docker volume for Portainer data
+- Started Portainer as a Docker container
+- Mounted the Docker socket so Portainer can manage the local Docker environment
+- Exposed Portainer on port `9443`
+- Checked that the Portainer container was running
+- Checked the Portainer logs
+- Allowed port `9443/tcp` through UFW
+- Accessed Portainer from the Windows host through the browser
+- Created the initial Portainer admin account
+
+**What I learned:**
+
+- Docker volumes are used to persist container data
+- Portainer can manage the local Docker environment through the Docker socket
+- A container can expose a service through a host port
+- UFW must allow the port before the service can be reached
+- VirtualBox NAT requires port forwarding for browser access from the Windows host
+- Internal tools should not expose credentials or passwords in public documentation
+
+**Commands used:**
+
+```bash
+docker volume create portainer_data
+docker volume ls
+
+docker run -d \
+  -p 9443:9443 \
+  --name portainer \
+  --restart=always \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v portainer_data:/data \
+  portainer/portainer-ce:sts
+
+docker ps
+docker logs portainer
+
+sudo ufw allow 9443/tcp
+sudo ufw status verbose
+---
+
 ## Problems and Solutions
 
 | Problem | Cause | Solution |

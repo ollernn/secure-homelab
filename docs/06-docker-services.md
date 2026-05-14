@@ -122,37 +122,98 @@ docker/
 └── nginx/
 ```
 
-## Planned Services
+## Docker Services
 
 | Service | Purpose | Status |
 |---|---|---|
-| Portainer | Manage Docker containers through a web interface | Planned |
+| Portainer | Manage Docker containers through a web interface | Installed |
 | Uptime Kuma | Monitor service availability | Planned |
 | Homepage | Dashboard for homelab services | Planned |
 | Nginx | Web server / reverse proxy | Planned |
 
 ## Portainer
 
-Portainer will be used to manage Docker containers, images, networks and volumes through a web interface.
+Portainer is used to manage Docker containers, images, networks and volumes through a web interface.
 
-Planned use:
+It was installed as the first internal Docker service in the homelab.
+
+### Purpose
+
+Portainer is included to:
 
 - View running containers
 - Manage Docker services
 - Inspect logs
 - Learn Docker management through a GUI
+- Make the homelab easier to manage visually
 
-Expected port:
+### Docker Volume
 
-```text
-9000
+A Docker volume was created to store Portainer data:
+
+```bash
+docker volume create portainer_data
 ```
 
-Status:
+The volume was verified with:
+
+```bash
+docker volume ls
+```
+
+### Installation Command
+
+Portainer was started with:
+
+```bash
+docker run -d \
+  -p 9443:9443 \
+  --name portainer \
+  --restart=always \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v portainer_data:/data \
+  portainer/portainer-ce:sts
+```
+
+### Container Status
+
+The container was checked with:
+
+```bash
+docker ps
+```
+
+Result:
 
 ```text
-Not installed yet
+portainer/portainer-ce:sts   Up   0.0.0.0:9443->9443/tcp
 ```
+
+### Logs
+
+Portainer logs were checked with:
+
+```bash
+docker logs portainer
+```
+
+The logs showed that Portainer started successfully and generated self-signed SSL certificates.
+
+### Access
+
+Portainer is accessed from the Windows host through VirtualBox port forwarding:
+
+```text
+https://127.0.0.1:9443
+```
+
+An admin account was created through the web interface.
+
+The password is not documented in this repository.
+
+### Status
+
+Status: Installed and working
 
 ## Uptime Kuma
 
