@@ -287,6 +287,81 @@ docker logs portainer
 
 sudo ufw allow 9443/tcp
 sudo ufw status verbose
+
+---
+
+### Session 7 - Uptime Kuma Installation and Monitoring
+
+**Date:** 2026-05-14
+
+**What I did:**
+
+- Created a Docker volume for Uptime Kuma data
+- Started Uptime Kuma as a Docker container
+- Exposed Uptime Kuma on port `3001`
+- Allowed port `3001/tcp` through UFW
+- Added a VirtualBox port forwarding rule for Uptime Kuma
+- Accessed Uptime Kuma from the Windows host
+- Created the initial Uptime Kuma admin account
+- Created a Docker network named `homelab`
+- Connected Portainer and Uptime Kuma to the same Docker network
+- Added Portainer as the first monitored service in Uptime Kuma
+
+**What I learned:**
+
+- Uptime Kuma can monitor internal services and show whether they are up or down
+- Docker containers need a shared Docker network to communicate by container name
+- `127.0.0.1` means different things depending on where it is used
+- Inside a container, `127.0.0.1` refers to that container itself
+- Containers on the same Docker network can communicate using container names
+- Self-signed HTTPS certificates may need TLS/SSL errors to be ignored in internal monitoring
+
+**Commands used:**
+
+```bash
+docker volume create uptime_kuma_data
+
+docker run -d \
+  --name uptime-kuma \
+  --restart=always \
+  -p 3001:3001 \
+  -v uptime_kuma_data:/app/data \
+  louislam/uptime-kuma:1
+
+sudo ufw allow 3001/tcp
+sudo ufw status verbose
+
+docker network create homelab
+docker network connect homelab portainer
+docker network connect homelab uptime-kuma
+docker network inspect homelab
+```
+
+**Result:**
+
+- Uptime Kuma is running
+- Uptime Kuma is accessible at `http://127.0.0.1:3001`
+- Portainer is monitored by Uptime Kuma
+- Portainer monitor status: `Up`
+- Portainer monitor result: `200 OK`
+
+**Problems:**
+
+- The first Portainer monitor used `https://127.0.0.1:9443`
+- This resulted in `ECONNREFUSED`
+- Uptime Kuma could not reach Portainer through `127.0.0.1`
+
+**Solutions:**
+
+- Created a shared Docker network named `homelab`
+- Connected both Portainer and Uptime Kuma to the same network
+- Changed the monitor URL to `https://portainer:9443`
+- Enabled ignoring TLS/SSL errors for the self-signed Portainer certificate
+
+**Next step:**
+
+- Deploy Homepage as an internal homelab dashboard
+
 ---
 
 ## Problems and Solutions

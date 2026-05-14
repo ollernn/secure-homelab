@@ -223,15 +223,23 @@ Result:
 9443/tcp (v6)              ALLOW IN    Anywhere (v6)
 ```
 
+Uptime Kuma was later allowed through UFW with:
+
+```bash
+sudo ufw allow 3001/tcp
+```
+
+The firewall now allows SSH, Portainer and Uptime Kuma.
+
 ## Open Ports
 
 | Port | Service | Reason | Status |
 |---:|---|---|---|
 | 22 | SSH | Server administration | Allowed |
 | 9443 | Portainer | Docker management web interface | Allowed |
+| 3001 | Uptime Kuma | Monitoring dashboard | Allowed |
 | 80 | HTTP / Nginx | Web access later | Not opened yet |
 | 443 | HTTPS / Nginx | Secure web access later | Not opened yet |
-| 3001 | Uptime Kuma | Monitoring dashboard | Not opened yet |
 
 ## fail2ban
 

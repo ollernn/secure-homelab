@@ -127,7 +127,7 @@ docker/
 | Service | Purpose | Status |
 |---|---|---|
 | Portainer | Manage Docker containers through a web interface | Installed |
-| Uptime Kuma | Monitor service availability | Planned |
+| Uptime Kuma | Monitor service availability | Installed |
 | Homepage | Dashboard for homelab services | Planned |
 | Nginx | Web server / reverse proxy | Planned |
 
@@ -217,26 +217,121 @@ Status: Installed and working
 
 ## Uptime Kuma
 
-Uptime Kuma will be used to monitor whether internal services are online.
+Uptime Kuma is used to monitor whether internal services are online.
 
-Planned use:
+It was installed as the second internal Docker service in the homelab.
 
-- Monitor Portainer
-- Monitor Homepage
-- Monitor Nginx
+### Purpose
+
+Uptime Kuma is included to:
+
+- Monitor internal services
+- Track whether services are up or down
 - Learn basic service monitoring
+- Provide visibility into the homelab environment
 
-Expected port:
+### Docker Volume
 
-```text
-3001
+A Docker volume was created to store Uptime Kuma data:
+
+```bash
+docker volume create uptime_kuma_data
 ```
 
-Status:
+The volume was verified with:
+
+```bash
+docker volume ls
+```
+
+### Installation Command
+
+Uptime Kuma was started with:
+
+```bash
+docker run -d \
+  --name uptime-kuma \
+  --restart=always \
+  -p 3001:3001 \
+  -v uptime_kuma_data:/app/data \
+  louislam/uptime-kuma:1
+```
+
+### Container Status
+
+The container was checked with:
+
+```bash
+docker ps
+```
+
+Uptime Kuma was running and exposed on port `3001`.
+
+### Access
+
+Uptime Kuma is accessed from the Windows host through VirtualBox port forwarding:
 
 ```text
-Not installed yet
+http://127.0.0.1:3001
 ```
+
+An admin account was created through the web interface.
+
+The password is not documented in this repository.
+
+### Docker Network
+
+A shared Docker network was created so that Uptime Kuma can monitor other containers by container name.
+
+Command used:
+
+```bash
+docker network create homelab
+```
+
+Portainer and Uptime Kuma were connected to the network:
+
+```bash
+docker network connect homelab portainer
+docker network connect homelab uptime-kuma
+```
+
+The network was checked with:
+
+```bash
+docker network inspect homelab
+```
+
+### Monitoring Portainer
+
+The first monitor added in Uptime Kuma was Portainer.
+
+The first attempt used:
+
+```text
+https://127.0.0.1:9443
+```
+
+This failed because `127.0.0.1` inside the Uptime Kuma container refers to the Uptime Kuma container itself.
+
+The monitor was changed to use the Docker container name:
+
+```text
+https://portainer:9443
+```
+
+Because Portainer uses a self-signed certificate in this internal lab environment, TLS/SSL errors were ignored for this monitor.
+
+Final result:
+
+```text
+Portainer: Up
+Status code: 200 OK
+```
+
+### Status
+
+Status: Installed and working
 
 ## Homepage
 

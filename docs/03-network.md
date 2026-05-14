@@ -159,6 +159,50 @@ https://127.0.0.1:9443
 
 Portainer uses a self-signed certificate in this internal lab environment.
 
+## Uptime Kuma Access
+
+Uptime Kuma is accessed through HTTP on port `3001`.
+
+Because the VM uses VirtualBox NAT, a port forwarding rule is used from the Windows host to the Ubuntu VM.
+
+| Setting | Value |
+|---|---|
+| Name | Uptime Kuma |
+| Protocol | TCP |
+| Host IP | 127.0.0.1 |
+| Host Port | 3001 |
+| Guest IP | empty |
+| Guest Port | 3001 |
+
+Access URL from the Windows host:
+
+```text
+http://127.0.0.1:3001
+```
+
+## Docker Internal Networking
+
+A custom Docker network named `homelab` was created so that containers can communicate with each other by container name.
+
+The network was created with:
+
+```bash
+docker network create homelab
+```
+
+The following containers were connected to the `homelab` network:
+
+- `portainer`
+- `uptime-kuma`
+
+This allows Uptime Kuma to monitor Portainer with:
+
+```text
+https://portainer:9443
+```
+
+Using `https://127.0.0.1:9443` inside Uptime Kuma did not work, because `127.0.0.1` inside a container refers to the container itself.
+
 ## Planned Internal Services
 
 The following services are planned for version 1:
@@ -179,7 +223,7 @@ The following services are planned for version 1:
 | 80 | HTTP / Nginx | Used for web access later | Not opened yet |
 | 443 | HTTPS / Nginx | May be used later | Not opened yet |
 | 9000 | Portainer HTTP | Exposed by container but not used directly | Not opened in UFW |
-| 3001 | Uptime Kuma | Monitoring dashboard | Not opened yet |
+| 3001 | Uptime Kuma | Monitoring dashboard | Allowed in UFW |
 
 ## Security Considerations
 
