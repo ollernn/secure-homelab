@@ -180,6 +180,27 @@ Access URL from the Windows host:
 http://127.0.0.1:3001
 ```
 
+## Homepage Access
+
+Homepage is accessed through HTTP on port `3000`.
+
+Because the VM uses VirtualBox NAT, a port forwarding rule is used from the Windows host to the Ubuntu VM.
+
+| Setting | Value |
+|---|---|
+| Name | Homepage |
+| Protocol | TCP |
+| Host IP | 127.0.0.1 |
+| Host Port | 3000 |
+| Guest IP | empty |
+| Guest Port | 3000 |
+
+Access URL from the Windows host:
+
+```text
+http://127.0.0.1:3000
+```
+
 ## Docker Internal Networking
 
 A custom Docker network named `homelab` was created so that containers can communicate with each other by container name.
@@ -194,6 +215,7 @@ The following containers were connected to the `homelab` network:
 
 - `portainer`
 - `uptime-kuma`
+- `homepage`
 
 This allows Uptime Kuma to monitor Portainer with:
 
@@ -202,6 +224,11 @@ https://portainer:9443
 ```
 
 Using `https://127.0.0.1:9443` inside Uptime Kuma did not work, because `127.0.0.1` inside a container refers to the container itself.
+
+This allows Uptime Kuma to monitor Homepage with:
+
+```text
+http://homepage:3000
 
 ## Planned Internal Services
 
@@ -220,10 +247,11 @@ The following services are planned for version 1:
 |---:|---|---|---|
 | 22 | SSH | Used for server administration | Allowed in UFW |
 | 9443 | Portainer | Docker management web interface | Allowed in UFW |
+| 3001 | Uptime Kuma | Monitoring dashboard | Allowed in UFW |
+| 3000 | Homepage | Internal homelab dashboard | Allowed in UFW |
 | 80 | HTTP / Nginx | Used for web access later | Not opened yet |
 | 443 | HTTPS / Nginx | May be used later | Not opened yet |
 | 9000 | Portainer HTTP | Exposed by container but not used directly | Not opened in UFW |
-| 3001 | Uptime Kuma | Monitoring dashboard | Allowed in UFW |
 
 ## Security Considerations
 

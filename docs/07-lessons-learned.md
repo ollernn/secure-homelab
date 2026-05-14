@@ -364,6 +364,73 @@ docker network inspect homelab
 
 ---
 
+---
+
+### Session 8 - Homepage Dashboard Installation
+
+**Date:** 2026-05-14
+
+**What I did:**
+
+- Created a folder structure for Homepage
+- Created a Docker Compose file for Homepage
+- Created basic Homepage configuration files
+- Added Portainer and Uptime Kuma as dashboard links
+- Started Homepage with Docker Compose
+- Allowed port `3000/tcp` through UFW
+- Added a VirtualBox port forwarding rule for Homepage
+- Accessed Homepage from the Windows host
+- Added Homepage as a monitor in Uptime Kuma
+
+**What I learned:**
+
+- Homepage can be used as an internal dashboard for homelab services
+- Docker Compose makes it easier to define and run services using a YAML file
+- Service configuration can be separated from the container using mounted config files
+- Uptime Kuma can monitor Homepage through the Docker network using the container name
+- A homelab becomes easier to navigate when services are collected in a dashboard
+
+**Commands used:**
+
+```bash
+mkdir -p ~/homelab/homepage/config
+cd ~/homelab/homepage
+nano docker-compose.yml
+
+cd ~/homelab/homepage/config
+nano services.yaml
+nano settings.yaml
+touch bookmarks.yaml widgets.yaml docker.yaml
+
+cd ~/homelab/homepage
+docker compose up -d
+docker ps
+
+sudo ufw allow 3000/tcp
+sudo ufw status verbose
+```
+
+**Result:**
+
+- Homepage is running
+- Homepage is accessible at `http://127.0.0.1:3000`
+- Homepage includes links to Portainer and Uptime Kuma
+- Homepage is monitored by Uptime Kuma
+- Homepage monitor status: `Up`
+- Homepage monitor result: `200 OK`
+
+**Problems:**
+
+- No major problems occurred during the Homepage installation.
+
+**Solutions:**
+
+- Homepage was connected to the existing Docker network and monitored internally with `http://homepage:3000`.
+
+**Next step:**
+
+- Deploy Nginx as a basic web server or reverse proxy
+
 ## Problems and Solutions
 
 | Problem | Cause | Solution |

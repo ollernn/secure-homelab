@@ -54,9 +54,9 @@ secure-homelab/
 
 ## Current Status
 
-Status: Base server configured
+Status: Internal services deployed
 
-Ubuntu Server 26.04 LTS is installed in a VirtualBox virtual machine. SSH access is configured with key-based authentication, UFW is active, fail2ban is running, and Docker with Docker Compose has been installed and verified.
+Ubuntu Server 26.04 LTS is installed in a VirtualBox virtual machine. SSH access is secured with key-based authentication, UFW is active, fail2ban is running, Docker with Docker Compose is installed, and the first internal services are deployed: Portainer, Uptime Kuma and Homepage.
 
 ## Completed So Far
 
@@ -72,6 +72,10 @@ Ubuntu Server 26.04 LTS is installed in a VirtualBox virtual machine. SSH access
 - Installed Docker and Docker Compose
 - Verified Docker with the `hello-world` test container
 - Documented installation, network setup, security configuration and Docker setup
+- Deployed Portainer as a Docker management interface
+- Deployed Uptime Kuma for service monitoring
+- Deployed Homepage as an internal homelab dashboard
+- Added Portainer and Homepage as monitored services in Uptime Kuma
 
 ## Version 1 Scope
 
@@ -118,12 +122,11 @@ Detailed documentation is available in the `docs/` folder:
 
 ## Next Steps
 
-1. Deploy Portainer as the first internal Docker service
-2. Deploy Uptime Kuma for service monitoring
-3. Deploy Homepage as a homelab dashboard
-4. Add Nginx as a web server / reverse proxy
-5. Document each service with configuration, ports and screenshots
-6. Create a portfolio summary on my personal website
+1. Deploy Nginx as a web server / reverse proxy
+2. Add Nginx to Homepage
+3. Add Nginx to Uptime Kuma monitoring
+4. Document service configuration, ports and screenshots
+5. Create a portfolio summary on my personal website
 
 ## Purpose of the Portfolio Version
 

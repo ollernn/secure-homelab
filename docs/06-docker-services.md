@@ -128,7 +128,7 @@ docker/
 |---|---|---|
 | Portainer | Manage Docker containers through a web interface | Installed |
 | Uptime Kuma | Monitor service availability | Installed |
-| Homepage | Dashboard for homelab services | Planned |
+| Homepage | Dashboard for homelab services | Installed |
 | Nginx | Web server / reverse proxy | Planned |
 
 ## Portainer
@@ -335,19 +335,97 @@ Status: Installed and working
 
 ## Homepage
 
-Homepage will be used as a simple dashboard for the homelab.
+Homepage is used as an internal dashboard for the homelab.
 
-Planned use:
+It was installed as the third internal Docker service.
 
-- Show links to internal services
-- Organize the homelab visually
+### Purpose
+
+Homepage is included to:
+
+- Provide a central dashboard for homelab services
+- Link to Portainer and Uptime Kuma
+- Make the homelab easier to navigate
 - Create a clearer overview of the environment
 
-Status:
+### Folder Structure
+
+Homepage was configured using files stored on the Ubuntu server:
 
 ```text
-Not installed yet
+~/homelab/homepage/
+├── docker-compose.yml
+└── config/
+    ├── services.yaml
+    ├── settings.yaml
+    ├── bookmarks.yaml
+    ├── widgets.yaml
+    └── docker.yaml
 ```
+
+### Docker Compose
+
+Homepage was deployed using Docker Compose.
+
+The compose file was created at:
+
+```text
+~/homelab/homepage/docker-compose.yml
+```
+
+Docker Compose was used to start the service:
+
+```bash
+docker compose up -d
+```
+
+### Configuration
+
+The main service links were configured in:
+
+```text
+services.yaml
+```
+
+Initial services added to the dashboard:
+
+- Portainer
+- Uptime Kuma
+
+Basic dashboard settings were configured in:
+
+```text
+settings.yaml
+```
+
+### Access
+
+Homepage is accessed from the Windows host through VirtualBox port forwarding:
+
+```text
+http://127.0.0.1:3000
+```
+
+### Monitoring
+
+Homepage was added as a monitor in Uptime Kuma.
+
+Uptime Kuma monitors Homepage internally through the Docker network:
+
+```text
+http://homepage:3000
+```
+
+Final result:
+
+```text
+Homepage: Up
+Status code: 200 OK
+```
+
+### Status
+
+Status: Installed and working
 
 ## Nginx
 
